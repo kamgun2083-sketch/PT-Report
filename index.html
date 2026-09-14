@@ -648,6 +648,8 @@
     });
 
     function saveData() {
+        if(!confirm('के तपाईं यो डेटा अनलाइन गुगल सिटमा सेभ गर्न चाहनुहुन्छ?')) return;
+
         const data = {
             reportType: document.getElementById('reportType').value,
             reportDate: document.getElementById('reportDate').value,
@@ -669,8 +671,27 @@
             data.presents.push({ value: input.value });
         });
 
+        // ब्राउजरको लोकल स्टोरेजमा सेभ गर्ने कार्य यथावत राखिएको
         localStorage.setItem('policeReportManualV4', JSON.stringify(data));
-        alert('डेटा सफलतापूर्वक सेभ भयो!');
+
+        // गुगल सिटमा डाटा पठाउने कोड (तपाईंले उपलब्ध गराउनुभएको URL प्रयोग गरिएको)
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby_BIcuZwWqBy667lFVExt9TDxyHc56_--cw7r4qIBlZz2ixIpw7GCe77oQ0IDhMM8q/exec";
+
+        fetch(WEB_APP_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            alert('डेटा सफलतापूर्वक अनलाइन गुगल सिटमा सेभ भयो!');
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('डाटा गुगल सिटमा पठाउँदा समस्या आयो!');
+        });
     }
 
     function loadData() {
