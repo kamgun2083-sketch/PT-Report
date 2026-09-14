@@ -181,98 +181,26 @@
             font-size: 12px;
         }
 
-        /* मोबाइल स्क्रिनहरूको लागि रेस्पोन्सिभ डिजाइन */
         @media screen and (max-width: 768px) {
-            body {
-                padding: 5px;
-            }
-            .container {
-                padding: 10px;
-            }
-            .controls-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .form-group-inline {
-                width: 100%;
-                justify-content: space-between;
-            }
-            .form-group-inline select, .form-group-inline input {
-                flex-grow: 1;
-            }
-            .btn-group {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 5px;
-            }
-            .btn {
-                width: 100%;
-                padding: 10px;
-            }
-            .signature-section {
-                flex-direction: column;
-                gap: 15px;
-            }
-            .sig-box {
-                width: 100%;
-            }
-            .sig-line {
-                margin-top: 15px;
-            }
+            body { padding: 5px; }
+            .container { padding: 10px; }
+            .controls-bar { flex-direction: column; align-items: stretch; }
+            .form-group-inline { width: 100%; justify-content: space-between; }
+            .form-group-inline select, .form-group-inline input { flex-grow: 1; }
+            .btn-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
+            .btn { width: 100%; padding: 10px; }
+            .signature-section { flex-direction: column; gap: 15px; }
+            .sig-box { width: 100%; }
         }
 
-        /* प्रिन्ट गर्दा अनिवार्य रूपमा एउटै पेजमा मिलाउने सेटिङ */
         @media print {
-            @page {
-                size: A4 landscape;
-                margin: 5mm; /* पेजको चारैतिरको खाली ठाउँ कम गरिएको */
-            }
-            body {
-                background: #fff;
-                padding: 0;
-                font-size: 11px;
-            }
-            .container {
-                box-shadow: none;
-                padding: 0;
-                max-width: 100%;
-                border-top: none;
-            }
-            .controls-bar {
-                display: none !important; 
-            }
-            .print-date-display {
-                display: block !important; 
-            }
-            th {
-                background-color: #1a365d !important;
-                color: white !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            .readonly-cell {
-                background-color: #edf2f7 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            tr[style*="background-color"] {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            input.cell-input {
-                border: none;
-                background: transparent;
-            }
-            .sig-box input {
-                border: none;
-                background: transparent;
-            }
-            .signature-section {
-                margin-top: 15px;
-            }
-            .sig-line {
-                margin-top: 20px;
-            }
+            @page { size: A4 landscape; margin: 5mm; }
+            body { background: #fff; padding: 0; font-size: 11px; }
+            .container { box-shadow: none; padding: 0; max-width: 100%; border-top: none; }
+            .controls-bar { display: none !important; }
+            .print-date-display { display: block !important; }
+            th { background-color: #1a365d !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .readonly-cell { background-color: #edf2f7 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
     </style>
 </head>
@@ -286,12 +214,10 @@
         <h3 id="reportTitleDisplay">दैनिक पिटी तथा रोलकल रिपोर्ट</h3>
     </div>
 
-    <!-- प्रिन्ट गर्दा मात्र देखिने मिति सेक्सन -->
     <div class="print-date-display">
         मिति: <span id="printDateSpan">२०८२।०४।०३</span> गते ।
     </div>
 
-    <!-- कन्ट्रोल र अप्सन बार -->
     <div class="controls-bar">
         <div class="form-group-inline">
             <label for="reportType">रिपोर्टको प्रकार:</label>
@@ -315,7 +241,6 @@
         </div>
     </div>
 
-    <!-- मुख्य डाटा टेबल -->
     <div class="table-responsive">
         <table id="reportTable">
             <thead>
@@ -337,7 +262,6 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- सि.नं. १: कुल कार्यरत संख्या -->
                 <tr>
                     <td>१</td>
                     <td class="text-left">कुल कार्यरत संख्या</td>
@@ -354,7 +278,6 @@
                     <td><input type="number" class="cell-input" data-row="0" data-col="10" value="22"></td>
                     <td class="readonly-cell" id="row-total-0">240</td>
                 </tr>
-                <!-- सि.नं. २: आन्तरिक ड्युटी(पोष्ट) -->
                 <tr>
                     <td>२</td>
                     <td class="text-left">आन्तरिक ड्युटी(पोष्ट)</td>
@@ -371,7 +294,6 @@
                     <td><input type="number" class="cell-input" data-row="1" data-col="10"></td>
                     <td class="readonly-cell" id="row-total-1">0</td>
                 </tr>
-                <!-- सि.नं. ३: कार्यालय ड्युटी -->
                 <tr>
                     <td>३</td>
                     <td class="text-left">कार्यालय ड्युटी</td>
@@ -388,7 +310,6 @@
                     <td><input type="number" class="cell-input" data-row="2" data-col="10"></td>
                     <td class="readonly-cell" id="row-total-2">14</td>
                 </tr>
-                <!-- सि.नं. ४: बाहिरी ड्युटी -->
                 <tr>
                     <td>४</td>
                     <td class="text-left">बाहिरी ड्युटी</td>
@@ -405,7 +326,6 @@
                     <td><input type="number" class="cell-input" data-row="3" data-col="10"></td>
                     <td class="readonly-cell" id="row-total-3">6</td>
                 </tr>
-                <!-- सि.नं. ५: क्वाटरगार्ड -->
                 <tr>
                     <td>५</td>
                     <td class="text-left">क्वाटरगार्ड</td>
@@ -422,7 +342,6 @@
                     <td><input type="number" class="cell-input" data-row="4" data-col="10"></td>
                     <td class="readonly-cell" id="row-total-4">4</td>
                 </tr>
-                <!-- सि.नं. ६: मौखिक काज -->
                 <tr>
                     <td>६</td>
                     <td class="text-left">मौखिक काज</td>
@@ -439,7 +358,6 @@
                     <td><input type="number" class="cell-input" data-row="5" data-col="10"></td>
                     <td class="readonly-cell" id="row-total-5">0</td>
                 </tr>
-                <!-- सि.नं. ७: लाईन विरामी -->
                 <tr>
                     <td>७</td>
                     <td class="text-left">लाईन विरामी</td>
@@ -456,7 +374,6 @@
                     <td><input type="number" class="cell-input" data-row="6" data-col="10"></td>
                     <td class="readonly-cell" id="row-total-6">24</td>
                 </tr>
-                <!-- सि.नं. ८: स्थायी विरामी -->
                 <tr>
                     <td>८</td>
                     <td class="text-left">स्थायी विरामी</td>
@@ -473,7 +390,6 @@
                     <td><input type="number" class="cell-input" data-row="7" data-col="10"></td>
                     <td class="readonly-cell" id="row-total-7">36</td>
                 </tr>
-                <!-- सि.नं. ९: बिदा -->
                 <tr>
                     <td>९</td>
                     <td class="text-left">बिदा</td>
@@ -490,7 +406,6 @@
                     <td><input type="number" class="cell-input" data-row="8" data-col="10"></td>
                     <td class="readonly-cell" id="row-total-8">8</td>
                 </tr>
-                <!-- सि.नं. १०: ने.प्र.अ. कुरुवा -->
                 <tr>
                     <td>१०</td>
                     <td class="text-left">ने.प्र.अ. कुरुवा</td>
@@ -507,7 +422,6 @@
                     <td><input type="number" class="cell-input" data-row="9" data-col="10"></td>
                     <td class="readonly-cell" id="row-total-9">6</td>
                 </tr>
-                <!-- सि.नं. ११: फटिक तथा निर्माण -->
                 <tr>
                     <td>११</td>
                     <td class="text-left">फटिक तथा निर्माण</td>
@@ -524,7 +438,6 @@
                     <td><input type="number" class="cell-input" data-row="10" data-col="10"></td>
                     <td class="readonly-cell" id="row-total-10">0</td>
                 </tr>
-                <!-- सि.नं. १२: विविध खर्च -->
                 <tr>
                     <td>१२</td>
                     <td class="text-left">विविध खर्च</td>
@@ -541,7 +454,6 @@
                     <td><input type="number" class="cell-input" data-row="11" data-col="10"></td>
                     <td class="readonly-cell" id="row-total-11">0</td>
                 </tr>
-                <!-- सि.नं. १३: कुल जम्मा खर्च -->
                 <tr style="background-color: #f8fafc; font-weight: bold;">
                     <td>१३</td>
                     <td class="text-left">कुल जम्मा खर्च</td>
@@ -558,7 +470,6 @@
                     <td class="readonly-cell" id="col-sum-10">0</td>
                     <td class="readonly-cell" id="grand-total-sum">0</td>
                 </tr>
-                <!-- सि.नं. १४: पिटी/रोलकल हाजिर संख्या (Manual Input) -->
                 <tr style="background-color: #ebf8ff; font-weight: bold;">
                     <td>१४</td>
                     <td class="text-left">पिटी/रोलकल हाजिर संख्या</td>
@@ -579,7 +490,6 @@
         </table>
     </div>
 
-    <!-- हस्ताक्षर खण्ड -->
     <div class="signature-section">
         <div class="sig-box">
             <div class="sig-line">
@@ -650,6 +560,15 @@
     function saveData() {
         if(!confirm('के तपाईं यो डेटा अनलाइन गुगल सिटमा सेभ गर्न चाहनुहुन्छ?')) return;
 
+        let rowTotals = [];
+        for (let r = 0; r < 12; r++) {
+            let val = parseFloat(document.getElementById(`row-total-${r}`).innerText) || 0;
+            rowTotals.push(val);
+        }
+
+        let totalExpenseSum = parseFloat(document.getElementById('grand-total-sum').innerText) || 0;
+        let totalPresentSum = parseFloat(document.getElementById('present-grand-total').innerText) || 0;
+
         const data = {
             reportType: document.getElementById('reportType').value,
             reportDate: document.getElementById('reportDate').value,
@@ -659,22 +578,13 @@
             sigName2: document.getElementById('sigName2').value,
             sigRank3: document.getElementById('sigRank3').value,
             sigName3: document.getElementById('sigName3').value,
-            inputs: [],
-            presents: []
+            rowTotals: rowTotals,
+            totalExpenseSum: totalExpenseSum,
+            totalPresentSum: totalPresentSum
         };
 
-        document.querySelectorAll('table input[data-row]').forEach((input) => {
-            data.inputs.push({ value: input.value });
-        });
-
-        document.querySelectorAll('.present-input').forEach((input) => {
-            data.presents.push({ value: input.value });
-        });
-
-        // ब्राउजरको लोकल स्टोरेजमा सेभ गर्ने कार्य यथावत राखिएको
         localStorage.setItem('policeReportManualV4', JSON.stringify(data));
 
-        // गुगल सिटमा डाटा पठाउने कोड (तपाईंले उपलब्ध गराउनुभएको URL प्रयोग गरिएको)
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby_BIcuZwWqBy667lFVExt9TDxyHc56_--cw7r4qIBlZz2ixIpw7GCe77oQ0IDhMM8q/exec";
 
         fetch(WEB_APP_URL, {
@@ -707,21 +617,6 @@
             if(data.sigRank3) document.getElementById('sigRank3').value = data.sigRank3;
             if(data.sigName3) document.getElementById('sigName3').value = data.sigName3;
             
-            if(data.inputs) {
-                document.querySelectorAll('table input[data-row]').forEach((input, index) => {
-                    if(data.inputs[index]) {
-                        input.value = data.inputs[index].value;
-                    }
-                });
-            }
-
-            if(data.presents) {
-                document.querySelectorAll('.present-input').forEach((input, index) => {
-                    if(data.presents[index]) {
-                        input.value = data.presents[index].value;
-                    }
-                });
-            }
             updateTitle();
             updatePrintDate();
             calculateAll();
