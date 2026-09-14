@@ -558,13 +558,32 @@
     });
 
     function saveData() {
-        if(!confirm('के तपाईं यो डेटा अनलाइन गुगल सिटमा सेभ गर्न चाहनुहुन्छ?')) return;
+        if(!confirm('के तपाईं यो डेटा अनलाइन गुगल सिटमा संख्या सहित सेभ गर्न चाहनुहुन्छ?')) return;
 
+        let allRowsData = [];
         let rowTotals = [];
         for (let r = 0; r < 12; r++) {
-            let val = parseFloat(document.getElementById(`row-total-${r}`).innerText) || 0;
-            rowTotals.push(val);
+            let rowCols = [];
+            for (let c = 0; c < 11; c++) {
+                let input = document.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
+                let val = parseFloat(input.value) || 0;
+                rowCols.push(val);
+            }
+            allRowsData.push(rowCols);
+            let tVal = parseFloat(document.getElementById(`row-total-${r}`).innerText) || 0;
+            rowTotals.push(tVal);
         }
+
+        let colSums = [];
+        for (let c = 0; c < 11; c++) {
+            let sVal = parseFloat(document.getElementById(`col-sum-${c}`).innerText) || 0;
+            colSums.push(sVal);
+        }
+
+        let presents = [];
+        document.querySelectorAll('.present-input').forEach(input => {
+            presents.push(parseFloat(input.value) || 0);
+        });
 
         let totalExpenseSum = parseFloat(document.getElementById('grand-total-sum').innerText) || 0;
         let totalPresentSum = parseFloat(document.getElementById('present-grand-total').innerText) || 0;
@@ -578,29 +597,28 @@
             sigName2: document.getElementById('sigName2').value,
             sigRank3: document.getElementById('sigRank3').value,
             sigName3: document.getElementById('sigName3').value,
+            allRowsData: allRowsData,
             rowTotals: rowTotals,
+            colSums: colSums,
+            presents: presents,
             totalExpenseSum: totalExpenseSum,
             totalPresentSum: totalPresentSum
         };
 
-        localStorage.setItem('policeReportManualV4', JSON.stringify(data));
-
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby_BIcuZwWqBy667lFVExt9TDxyHc56_--cw7r4qIBlZz2ixIpw7GCe77oQ0IDhMM8q/exec";
+        const WEB_APP_URL = "यहाँ_तपाईंको_गुगल_स्क्रिप्टको_वेब_एप_युआरएल_राख्नुहोस्";
 
         fetch(WEB_APP_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         })
         .then(response => {
-            alert('डेटा सफलतापूर्वक अनलाइन गुगल सिटमा सेभ भयो!');
+            alert('तपाईंको सबै संख्या र विवरणहरू गुगल सिटमा सफलतापुर्वक सेभ भयो!');
         })
         .catch((error) => {
             console.error('Error:', error);
-            alert('डाटा गुगल सिटमा पठाउँदा समस्या आयो!');
+            alert('डेटा पठाउँदा त्रुटि भयो!');
         });
     }
 
