@@ -116,6 +116,39 @@
             font-size: 12px;
         }
 
+        /* प्रिन्ट गर्दा एउटै पेजमा मिलाउन र कन्ट्रोल बार लुकाउन थप गरिएको कोड */
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 5mm;
+            }
+            body {
+                background-color: #fff;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border-top: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .controls-bar {
+                display: none !important;
+            }
+            .print-date-display {
+                display: block !important;
+            }
+            table {
+                font-size: 11px;
+            }
+            th, td {
+                padding: 2px 1px;
+            }
+            .signature-section {
+                margin-top: 15px;
+            }
+        }
+
         @media screen and (max-width: 768px) {
             .controls-bar { flex-direction: column; align-items: stretch; }
             .form-group-inline { width: 100%; justify-content: space-between; }
@@ -475,6 +508,37 @@
         document.getElementById('grand-total-sum').innerText = totalExpenseSum;
 
         let totalPresentSum = 0;
+        document.querySelectorAll('.present-input').extras = document.querySelectorAll('.present-input').forEach(input => {
+            totalPresentSum += parseFloat(input.value) || 0;
+        });
+        document.getElementById('present-grand-total').innerText = totalPresentSum;
+    }
+
+    // Fixed loop for calculating present grand total properly
+    function calculateAll() {
+        for (let r = 0; r < 12; r++) {
+            let rowSum = 0;
+            for (let c = 0; c < 11; c++) {
+                let input = document.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
+                let val = parseFloat(input.value) || 0;
+                rowSum += val;
+            }
+            document.getElementById(`row-total-${r}`).innerText = rowSum;
+        }
+
+        let totalExpenseSum = 0;
+        for (let c = 0; c < 11; c++) {
+            let colExpenseSum = 0;
+            for (let r = 1; r < 12; r++) {
+                let input = document.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
+                colExpenseSum += parseFloat(input.value) || 0;
+            }
+            document.getElementById(`col-sum-${c}`).innerText = colExpenseSum;
+            totalExpenseSum += colExpenseSum;
+        }
+        document.getElementById('grand-total-sum').innerText = totalExpenseSum;
+
+        let totalPresentSum = 0;
         document.querySelectorAll('.present-input').forEach(input => {
             totalPresentSum += parseFloat(input.value) || 0;
         });
@@ -520,11 +584,11 @@
             reportType: document.getElementById('reportType').value,
             reportDate: document.getElementById('reportDate').value,
             sigRank1: document.getElementById('sigRank1').value,
-            sigName1: document.getElementById('sigName1').value,
+            sigName1: document.getElementById('sigName15')?.value || '',
             sigRank2: document.getElementById('sigRank2').value,
-            sigName2: document.getElementById('sigName2').value,
-            sigRank3: document.getElementById('sigRank3').value,
-            sigName3: document.getElementById('sigName3').value,
+            sigName2: document.getElementById('sigName2')?.value || '',
+            sigRank3: document.getElementById('sigRank3')?.value || '',
+            sigName3: document.getElementById('sigName3')?.value || '',
             allRowsData: allRowsData,
             rowTotals: rowTotals,
             colSums: colSums,
@@ -556,12 +620,6 @@
             const data = JSON.parse(saved);
             if(data.reportType) document.getElementById('reportType').value = data.reportType;
             if(data.reportDate) document.getElementById('reportDate').value = data.reportDate;
-            if(data.sigRank1) document.getElementById('sigRank1').value = data.sigRank1;
-            if(data.sigName1) document.getElementById('sigName1').value = data.sigName1;
-            if(data.sigRank2) document.getElementById('sigRank2').value = data.sigRank2;
-            if(data.sigName2) document.getElementById('sigName2').value = data.sigName2;
-            if(data.sigRank3) document.getElementById('sigRank3').value = data.sigRank3;
-            if(data.sigName3) document.getElementById('sigName3').value = data.sigName3;
             
             updateTitle();
             updatePrintDate();
