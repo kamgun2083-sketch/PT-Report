@@ -564,60 +564,41 @@
         document.getElementById('printDateSpan').innerText = dateVal;
     }
 
+    // सि.नं. १ देखि १७ सम्मको तेर्सो हिसाब र सि.नं. २ देखि १७ सम्मको कुल जम्मा खर्च (ठाडो) हिसाब गर्ने
     function calculateAll() {
-        for (let r = 0; r < 12; r++) {
+        // १ देखि १७ सम्मका सबै १७ वटा लहर (Rows 0 to 16) को तेर्सो जम्मा निकाल्ने
+        for (let r = 0; r < 17; r++) {
             let rowSum = 0;
             for (let c = 0; c < 11; c++) {
                 let input = document.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
                 let val = parseFloat(input.value) || 0;
                 rowSum += val;
             }
-            document.getElementById(`row-total-${r}`).innerText = rowSum;
+            let rowTotalElem = document.getElementById(`row-total-${r}`);
+            if (rowTotalElem) {
+                rowTotalElem.innerText = rowSum;
+            }
         }
 
+        // सि. नं. २ देखि १७ (data-row 1 देखि 16) सम्मको रकम मात्र जोडेर कुल जम्मा खर्च (१८) निकाल्ने
         let totalExpenseSum = 0;
         for (let c = 0; c < 11; c++) {
             let colExpenseSum = 0;
-            for (let r = 1; r < 12; r++) {
+            for (let r = 1; r < 17; r++) {
                 let input = document.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
-                colExpenseSum += parseFloat(input.value) || 0;
+                if (input) {
+                    colExpenseSum += parseFloat(input.value) || 0;
+                }
             }
-            document.getElementById(`col-sum-${c}`).innerText = colExpenseSum;
+            let colSumElem = document.getElementById(`col-sum-${c}`);
+            if (colSumElem) {
+                colSumElem.innerText = colExpenseSum;
+            }
             totalExpenseSum += colExpenseSum;
         }
         document.getElementById('grand-total-sum').innerText = totalExpenseSum;
 
-        let totalPresentSum = 0;
-        document.querySelectorAll('.present-input').extras = document.querySelectorAll('.present-input').forEach(input => {
-            totalPresentSum += parseFloat(input.value) || 0;
-        });
-        document.getElementById('present-grand-total').innerText = totalPresentSum;
-    }
-
-    // Fixed loop for calculating present grand total properly
-    function calculateAll() {
-        for (let r = 0; r < 12; r++) {
-            let rowSum = 0;
-            for (let c = 0; c < 11; c++) {
-                let input = document.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
-                let val = parseFloat(input.value) || 0;
-                rowSum += val;
-            }
-            document.getElementById(`row-total-${r}`).innerText = rowSum;
-        }
-
-        let totalExpenseSum = 0;
-        for (let c = 0; c < 11; c++) {
-            let colExpenseSum = 0;
-            for (let r = 1; r < 12; r++) {
-                let input = document.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
-                colExpenseSum += parseFloat(input.value) || 0;
-            }
-            document.getElementById(`col-sum-${c}`).innerText = colExpenseSum;
-            totalExpenseSum += colExpenseSum;
-        }
-        document.getElementById('grand-total-sum').innerText = totalExpenseSum;
-
+        // पिटी/रोलकल हाजिर संख्याको जम्मा हिसाब गर्ने
         let totalPresentSum = 0;
         document.querySelectorAll('.present-input').forEach(input => {
             totalPresentSum += parseFloat(input.value) || 0;
@@ -634,7 +615,7 @@
 
         let allRowsData = [];
         let rowTotals = [];
-        for (let r = 0; r < 12; r++) {
+        for (let r = 0; r < 17; r++) {
             let rowCols = [];
             for (let c = 0; c < 11; c++) {
                 let input = document.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
@@ -664,7 +645,7 @@
             reportType: document.getElementById('reportType').value,
             reportDate: document.getElementById('reportDate').value,
             sigRank1: document.getElementById('sigRank1').value,
-            sigName1: document.getElementById('sigName15')?.value || '',
+            sigName1: document.getElementById('sigName1')?.value || '',
             sigRank2: document.getElementById('sigRank2').value,
             sigName2: document.getElementById('sigName2')?.value || '',
             sigRank3: document.getElementById('sigRank3')?.value || '',
