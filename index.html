@@ -71,7 +71,7 @@
 
         .table-responsive { width: 100%; overflow-x: auto; margin-bottom: 10px; }
         table { width: 100%; min-width: 850px; border-collapse: collapse; text-align: center; font-size: 12px; }
-        th, td { border: 1px solid #4a5568; padding: 3px 2px; }
+        th, td { border: 1px solid #4a5568; padding: 2px 2px; }
         th { background-color: #1a365d; color: #ffffff; font-weight: bold; }
         .text-left { text-align: left; padding-left: 6px; }
         input.cell-input {
@@ -87,20 +87,52 @@
         input.cell-input:focus { outline: 1px solid #2b6cb0; background: #fff; }
         .readonly-cell { background-color: #edf2f7; font-weight: bold; }
         
+        /* नोटः बक्सलाई टेबल जत्रै लामो र राम्रो बनाउन गरिएको डिजाइन */
+        .sig-line-container {
+            display: flex;
+            align-items: center;
+            border: 1px solid #4a5568; 
+            padding: 5px 10px;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            background: #fff;
+        }
+        .fixed-text {
+            font-weight: bold;
+            color: #1a365d;
+            user-select: none;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+        .sig-line-container input[type="text"] {
+            border: none;
+            outline: none;
+            flex-grow: 1;
+            margin-left: 8px;
+            font-size: 13px;
+            width: 100%;
+            background: transparent;
+            font-family: inherit;
+        }
+
         .signature-section {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
+            margin-top: 10px;
             text-align: center;
             page-break-inside: avoid;
             gap: 15px;
         }
-        .sig-box { width: 33%; }
+        .sig-box { width: 25%; }
         .sig-line {
             border-top: 1px solid #1a365d;
-            margin-top: 25px;
-            margin-bottom: 3px;
-            padding-top: 4px;
+            margin-top: 15px;
+            margin-bottom: 2px;
+            padding-top: 2px;
             font-weight: bold;
             font-size: 13px;
         }
@@ -108,9 +140,9 @@
             width: 100%;
             text-align: center;
             border: 1px dashed #cbd5e1;
-            padding: 3px;
+            padding: 2px;
             font-family: inherit;
-            margin-top: 3px;
+            margin-top: 2px;
             border-radius: 3px;
             background: #fafafa;
             font-size: 12px;
@@ -120,7 +152,7 @@
         @media print {
             @page {
                 size: A4 landscape;
-                margin: 5mm;
+                margin: 4mm;
             }
             body {
                 background-color: #fff;
@@ -139,13 +171,16 @@
                 display: block !important;
             }
             table {
-                font-size: 11px;
+                font-size: 10px;
             }
             th, td {
-                padding: 2px 1px;
+                padding: 1px 1px;
             }
             .signature-section {
-                margin-top: 15px;
+                margin-top: 8px;
+            }
+            .sig-line {
+                margin-top: 12px;
             }
         }
 
@@ -524,10 +559,13 @@
             </tbody>
         </table>
     </div>
-<div class="sig-line">
-    <span class="fixed-text">नोटः</span>
-    <input type="text" id="sigRank1" placeholder="यहाँ थप विवरणहरू लामो लेख्न मिल्छ...">
-</div>
+
+    <!-- नोटः लेख्ने फिक्स टेक्स्ट र लामो इन्पुट बक्स -->
+    <div class="sig-line-container">
+        <span class="fixed-text">नोटः</span>
+        <input type="text" id="sigRankNote" placeholder="यहाँ थप विवरणहरू लामो लेख्न मिल्छ...">
+    </div>
+
     <div class="signature-section">
         <div class="sig-box">
             <div class="sig-line">
@@ -543,15 +581,15 @@
         </div>
          <div class="sig-box">
             <div class="sig-line">
-                <input type="text" id="sigRank2" value="ड्यूटी अधिकृत" placeholder="पद लेख्नुहोस्">
+                <input type="text" id="sigRank3" value="ड्यूटी अधिकृत" placeholder="पद लेख्नुहोस्">
             </div>
-            <div><input type="text" id="sigName2" placeholder="नाम लेख्नुहोस्"></div>
+            <div><input type="text" id="sigName3" placeholder="नाम लेख्नुहोस्"></div>
         </div>
         <div class="sig-box">
             <div class="sig-line">
-                <input type="text" id="sigRank3" value="फिल्ड अधिकृत" placeholder="पद लेख्नुहोस्">
+                <input type="text" id="sigRank4" value="फिल्ड अधिकृत" placeholder="पद लेख्नुहोस्">
             </div>
-            <div><input type="text" id="sigName3" placeholder="नाम लेख्नुहोस्"></div>
+            <div><input type="text" id="sigName4" placeholder="नाम लेख्नुहोस्"></div>
         </div>
     </div>
 </div>
@@ -567,9 +605,7 @@
         document.getElementById('printDateSpan').innerText = dateVal;
     }
 
-    // सि.नं. १ देखि १७ सम्मको तेर्सो हिसाब र सि.नं. २ देखि १७ सम्मको कुल जम्मा खर्च (ठाडो) हिसाब गर्ने
     function calculateAll() {
-        // १ देखि १७ सम्मका सबै १७ वटा लहर (Rows 0 to 16) को तेर्सो जम्मा निकाल्ने
         for (let r = 0; r < 17; r++) {
             let rowSum = 0;
             for (let c = 0; c < 11; c++) {
@@ -583,7 +619,6 @@
             }
         }
 
-        // सि. नं. २ देखि १७ (data-row 1 देखि 16) सम्मको रकम मात्र जोडेर कुल जम्मा खर्च (१८) निकाल्ने
         let totalExpenseSum = 0;
         for (let c = 0; c < 11; c++) {
             let colExpenseSum = 0;
@@ -601,7 +636,6 @@
         }
         document.getElementById('grand-total-sum').innerText = totalExpenseSum;
 
-        // पिटी/रोलकल हाजिर संख्याको जम्मा हिसाब गर्ने
         let totalPresentSum = 0;
         document.querySelectorAll('.present-input').forEach(input => {
             totalPresentSum += parseFloat(input.value) || 0;
@@ -647,12 +681,15 @@
         const data = {
             reportType: document.getElementById('reportType').value,
             reportDate: document.getElementById('reportDate').value,
+            noteText: document.getElementById('sigRankNote').value,
             sigRank1: document.getElementById('sigRank1').value,
             sigName1: document.getElementById('sigName1')?.value || '',
             sigRank2: document.getElementById('sigRank2').value,
             sigName2: document.getElementById('sigName2')?.value || '',
             sigRank3: document.getElementById('sigRank3')?.value || '',
             sigName3: document.getElementById('sigName3')?.value || '',
+            sigRank4: document.getElementById('sigRank4')?.value || '',
+            sigName4: document.getElementById('sigName4')?.value || '',
             allRowsData: allRowsData,
             rowTotals: rowTotals,
             colSums: colSums,
@@ -684,6 +721,7 @@
             const data = JSON.parse(saved);
             if(data.reportType) document.getElementById('reportType').value = data.reportType;
             if(data.reportDate) document.getElementById('reportDate').value = data.reportDate;
+            if(data.noteText) document.getElementById('sigRankNote').value = data.noteText;
             
             updateTitle();
             updatePrintDate();
