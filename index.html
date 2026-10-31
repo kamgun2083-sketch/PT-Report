@@ -23,7 +23,22 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             border-top: 4px solid #1a365d;
         }
-        .header { text-align: center; margin-bottom: 5px; }
+        .header { text-align: center; margin-bottom: 5px; position: relative; }
+        .live-clock {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            text-align: right;
+            font-weight: bold;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #1a365d;
+            white-space: nowrap;
+        }
+        @media screen and (max-width: 900px) {
+            .live-clock { position: static; text-align: center; margin-top: 2px; }
+        }
+        @media print { .live-clock { display: none !important; } }
         .header h3 { color: #1a365d; font-weight: bold; font-size: 18px; margin: 2px 0; }
         .header h4 { font-size: 15px; margin: 2px 0; }
         .header h5 { font-size: 13px; margin: 2px 0; color: #333; }
@@ -202,6 +217,10 @@
         <h5>गृह मन्त्रालय</h5>
         <h4>काठमाडौं उपत्यका प्रहरी सशस्त्र प्रहरी गण नं. २ महाराजगंज</h4>
         <h3 id="reportTitleDisplay">दैनिक पिटी तथा रोलकल रिपोर्ट</h3>
+        <div class="live-clock">
+            <div id="liveNepaliDate"></div>
+            <div id="liveNepaliTime"></div>
+        </div>
     </div>
 
     <div class="print-date-display">
@@ -736,10 +755,77 @@
         }
     }
 
+    /* ===== अटोमेटिक नेपाली मिति, समय र बार (नेपाल समय Asia/Kathmandu अनुसार) ===== */
+    const BS_ANCHOR_AD = Date.UTC(2026, 3, 14); // बि.सं. २०८३ बैशाख १ = २०२६ अप्रिल १४
+    const BS_ANCHOR_YEAR = 2083;
+    const BS_MONTH_DAYS = {
+        2083: [31,31,32,31,31,31,30,29,30,29,30,30],
+        2084: [31,31,32,31,31,30,30,30,29,30,30,30],
+        2085: [31,32,31,32,30,31,30,30,29,30,30,30],
+        2086: [30,32,31,32,31,30,30,30,29,30,30,30],
+        2087: [31,31,32,31,31,31,30,30,29,30,30,30],
+        2088: [30,31,32,32,30,31,30,30,29,30,30,30],
+        2089: [30,32,31,32,31,30,30,30,29,30,30,30],
+        2090: [30,32,31,32,31,30,30,30,29,30,30,30]
+    };
+    const NP_MONTHS = ['बैशाख','जेठ','असार','श्रावण','भाद्र','आश्विन','कार्तिक','मंसिर','पौष','माघ','फाल्गुन','चैत्र'];
+    const NP_DAYS = ['आइतवार','सोमवार','मङ्गलवार','बुधवार','बिहीवार','शुक्रवार','शनिवार'];
+
+    function toNpDigits(n) {
+        return String(n).replace(/[0-9]/g, d => '०१२३४५६७८९'[d]);
+    }
+
+    function getNepalNow() {
+        const parts = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Kathmandu', hourCycle: 'h23',
+            year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: 'numeric', minute: 'numeric', second: 'numeric'
+        }).formatToParts(new Date());
+        const p = {};
+        parts.forEach(x => { if (x.type !== 'literal') p[x.type] = parseInt(x.value, 10); });
+        return p;
+    }
+
+    function adToBs(y, m, d) {
+        let diff = Math.round((Date.UTC(y, m - 1, d) - BS_ANCHOR_AD) / 86400000);
+        if (diff < 0) return null;
+        let year = BS_ANCHOR_YEAR;
+        while (BS_MONTH_DAYS[year]) {
+            for (let mi = 0; mi < 12; mi++) {
+                const len = BS_MONTH_DAYS[year][mi];
+                if (diff < len) return { year: year, month: mi, day: diff + 1 };
+                diff -= len;
+            }
+            year++;
+        }
+        return null;
+    }
+
+    function updateLiveClock() {
+        const n = getNepalNow();
+        const dateEl = document.getElementById('liveNepaliDate');
+        const timeEl = document.getElementById('liveNepaliTime');
+        if (!dateEl || !timeEl) return;
+
+        const bs = adToBs(n.year, n.month, n.day);
+        const weekday = NP_DAYS[new Date(Date.UTC(n.year, n.month - 1, n.day)).getUTCDay()];
+        dateEl.innerText = bs
+            ? toNpDigits(bs.year) + ' साल ' + NP_MONTHS[bs.month] + ' ' + toNpDigits(bs.day) + ' गते, ' + weekday
+            : weekday;
+
+        const h = n.hour;
+        const period = h < 12 ? 'बिहान' : (h < 16 ? 'दिउँसो' : (h < 20 ? 'साँझ' : 'राति'));
+        const h12 = h % 12 === 0 ? 12 : h % 12;
+        const pad = v => (v < 10 ? '0' : '') + v;
+        timeEl.innerText = period + ' ' + toNpDigits(pad(h12)) + ':' + toNpDigits(pad(n.minute)) + ':' + toNpDigits(pad(n.second)) + ' बजे';
+    }
+
     window.onload = function() {
         loadData();
         updatePrintDate();
         calculateAll();
+        updateLiveClock();
+        setInterval(updateLiveClock, 1000);
     };
 </script>
 
